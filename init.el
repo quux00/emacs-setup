@@ -9,6 +9,9 @@
 (delete-selection-mode)        ; the active region can be replaced just be starting to type
 (tool-bar-mode -1)             ; turn off the toolbar
 (mouse-avoidance-mode 'exile)  ; if cursor nears mouse, make the cursor move away automatically
+(global-auto-revert-mode 1)    ; auto refresh buffers
+(setq global-auto-revert-non-file-buffers t)  ; Also auto refresh dired
+
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 (setq scroll-step 1
@@ -26,13 +29,32 @@
       kept-old-versions 2
       version-control t)              ; use versioned backups
 
-(autoload 'filladapt-mode "filladapt" nil t)  ; I don't know what this does - research or remove!!
+
+;; UTF-8 - probably not necessary anymore, but just in case
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(prefer-coding-system 'utf-8)
+
+;; Add parts of each file's directory to the buffer name if not unique
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'forward)
+
+
+;; ---------------------------------------------------------- ;;
+;; ----- Experimental => try out and document or delete ----- ;;
+;; ---------------------------------------------------------- ;;
+; I don't know what this does - research or remove!!
+(autoload 'filladapt-mode "filladapt" nil t)
+; Show keystrokes in progress - not sure what this means
+(setq echo-keystrokes 0.1)
 
 
 ;; ----------------------------------------------------------- ;;
 ;; ----- start the emacs server - so can use emacsclient ----- ;;
 ;; ----------------------------------------------------------- ;;
-(server-start)
+(require 'server)
+(unless (server-running-p)
+  (server-start))
 
 
 ;; ---------------------------------------------------- ;;
@@ -90,6 +112,14 @@
 (setq interprogram-paste-function 'x-cut-buffer-or-selection-value)
 
 
+;; ------------------------------------------------------- ;;
+;; -------- Save point position between sessions --------- ;;
+;; ------------------------------------------------------- ;;
+(require 'saveplace)
+(setq-default save-place t)
+(setq save-place-file "~/.emacs.d/.places")
+
+
 ;; --------------------------------------------------- ;;
 ;; -------------- Adjust 'writing modes' ------------- ;;
 ;; --------------------------------------------------- ;;
@@ -128,20 +158,20 @@
 ;; ------------------------------------------------------ ;;
 ;; -------------- My preferred key bindings ------------- ;;
 ;; ------------------------------------------------------ ;;
-(global-set-key [(meta g)]          'goto-line)
-(global-set-key [(control shift l)] 'goto-line)
+(global-set-key [(meta g)] 'goto-line)
+(global-set-key "\C-L"     'goto-line)
 (global-set-key "\C-c\C-c" 'comment-region)
 (global-set-key "\C-c\C-u" 'uncomment-region)
 (global-set-key "\M-;"     'comment-or-uncomment-region)
 (global-set-key "\C-c;"    'comment-indent)
-(global-set-key "\C-x\C-d" 'electric-buffer-list)
-(global-set-key "\C-c\C-k" 'kill-whole-line)     ; delete whole line (including newline) from anywhere
-(global-set-key "\C-x\C-k" 'kill-region)         ; normally mapped to \C-w
-(global-set-key "\C-w"     'backward-kill-word)  ; make emacs more like bash shell
-(global-set-key "\C-z"     'undo)                ; too ingrained from years of Windoze ...
+(global-set-key "\C-x\C-d" 'electric-buffer-list) ; one of my favorite things in emacs ...
+(global-set-key "\C-c\C-k" 'kill-whole-line)      ; delete whole line (including newline) from anywhere
+(global-set-key "\C-x\C-k" 'kill-region)          ; normally mapped to \C-w
+(global-set-key "\C-w"     'backward-kill-word)   ; make emacs more like bash shell
+(global-set-key "\C-z"     'undo)                 ; too ingrained from years of Windoze ...
 (global-set-key "\C-x\C-z" 'shell)
-(global-set-key [(control \;)] 'dabbrev-expand)  ; I find the M-/ binding awkward
-(global-set-key (kbd "RET") 'newline-and-indent) ; indent previous line after
+(global-set-key [(control \;)] 'dabbrev-expand)   ; I find the M-/ binding awkward
+(global-set-key (kbd "RET") 'newline-and-indent)  ; indent previous line after
 (global-set-key (read-kbd-macro "M-s") 'query-replace)
 (global-set-key (read-kbd-macro "C-x w") 'write-words)
 (global-set-key (read-kbd-macro "C-x c") 'write-code)
@@ -369,25 +399,23 @@
 (set-foreground-color "yellow")
 (set-cursor-color "white")
 
-
 ;;------ Automatic settings: Do Not Edit These ------- ;;
 (custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
  '(column-number-mode t)
  '(inhibit-startup-screen t)
- ;; '(standard-indent 2)
- '(tab-stop-list (quote (2 4 6 8 10 12 14 16 18 20 22 24 26 28 30))))
+ '(tab-stop-list (quote (2 4 6 8 10 12 14 16 18 20 22 24 26 28 30)))
+ '(tool-bar-mode nil))
 
 (custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
  '(default ((t (:inherit nil :stipple nil :background "black" :foreground "yellow" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight bold :width normal))))
- ;;'(default ((t (:inherit nil :stipple nil :background "black" :foreground "yellow" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight bold :height 113 :width normal :foundry "monotype" :family "Courier New"))))
  '(font-lock-warning-face ((((class color) (background dark)) (:foreground "SkyBlue" :background "black")))))
 
 ;;'(show-paren-mode t nil (paren))
