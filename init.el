@@ -158,8 +158,8 @@
 ;; ------------------------------------------------------ ;;
 ;; -------------- My preferred key bindings ------------- ;;
 ;; ------------------------------------------------------ ;;
-(global-set-key [(meta g)] 'goto-line)
-(global-set-key "\C-L"     'goto-line)
+(global-set-key [(meta g)]          'goto-line)
+(global-set-key [(control shift l)] 'goto-line)
 (global-set-key "\C-c\C-c" 'comment-region)
 (global-set-key "\C-c\C-u" 'uncomment-region)
 (global-set-key "\M-;"     'comment-or-uncomment-region)
@@ -187,6 +187,18 @@
 ;; ----------------------------------------------------- ;;
 (add-to-list 'load-path "~/.emacs.d/site-lisp")
 (load-file "~/.emacs.d/macros.el")   ; load my macros
+
+
+;; ----------------------------------------------------- ;;
+;; ------------- Mine goes to 11: chords! -------------- ;;
+;; ----------------------------------------------------- ;;
+(require 'key-chord)
+(key-chord-mode 1)
+(key-chord-define-global "jk"     'dabbrev-expand)
+(key-chord-define-global ",,"     'indent-for-comment)
+(key-chord-define-global "a\;"    "@")
+(key-chord-define-global "s;"     "#{}\C-b")  ;; \C-b is "backspace">?<>
+(key-chord-define-global "<>"     "<>\C-b")
 
 
 ;; --------------------------------------------------------- ;;
