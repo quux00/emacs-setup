@@ -12,7 +12,8 @@
 (global-auto-revert-mode 1)    ; auto refresh buffers
 (setq global-auto-revert-non-file-buffers t)  ; Also auto refresh dired
 
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
+;; -> this may be a disaster ...
+(add-hook 'before-exit-hook 'delete-trailing-whitespace)
 
 (setq scroll-step 1
       mouse-yank-at-point 't       ; mouse will paste at point, not where you click
@@ -128,7 +129,7 @@
 ;; narrower window, better line wrapping for prose
 (defun write-words ()
   (interactive)
-  (set-frame-width nil 84)
+  (set-frame-width nil 90)
   (global-visual-line-mode t)
   (setq mode-line-format nil)
   (show-paren-mode nil))
@@ -136,7 +137,7 @@
 ;; widescreen, no line-wrap
 (defun write-code ()
   (interactive)
-  (set-frame-width nil 125)
+  (set-frame-width nil 126)
   (global-visual-line-mode 0)
   (show-paren-mode)
   (setq mode-line-format
@@ -155,6 +156,24 @@
               )))
 
 
+;; -------------------------------------------        ----------- ;;
+;; -------------- TODO: JUST ADDED - need to test !!! ------------- ;;
+;; -------------------------------------------        ----------- ;;
+;; Original idea from
+;; http://www.opensubscriber.com/message/emacs-devel@gnu.org/10971693.html
+;; from: http://www.emacswiki.org/emacs/CommentingCode
+(defun comment-dwim-line (&optional arg)
+  "Replacement for the comment-dwim command.
+   If no region is selected and current line is not blank and we are not at the end of the line,
+   then comment current line.
+   Replaces default behaviour of comment-dwim, when it inserts comment at the end of the line."
+  (interactive "*P")
+  (comment-normalize-vars)
+  (if (and (not (region-active-p)) (not (looking-at "[ \t]*$")))
+      (comment-or-uncomment-region (line-beginning-position) (line-end-position))
+    (comment-dwim arg)))
+(global-set-key "\M-;" 'comment-dwim-line)
+
 ;; ------------------------------------------------------ ;;
 ;; -------------- My preferred key bindings ------------- ;;
 ;; ------------------------------------------------------ ;;
@@ -162,7 +181,7 @@
 (global-set-key [(control shift l)] 'goto-line)
 (global-set-key "\C-c\C-c" 'comment-region)
 (global-set-key "\C-c\C-u" 'uncomment-region)
-(global-set-key "\M-;"     'comment-or-uncomment-region)
+;(global-set-key "\M-;"     'comment-or-uncomment-region)
 (global-set-key "\C-c;"    'comment-indent)
 (global-set-key "\C-x\C-d" 'electric-buffer-list) ; one of my favorite things in emacs ...
 (global-set-key "\C-c\C-k" 'kill-whole-line)      ; delete whole line (including newline) from anywhere
@@ -195,9 +214,12 @@
 (require 'key-chord)
 (key-chord-mode 1)
 (key-chord-define-global "jk"     'dabbrev-expand)
+(key-chord-define-global "90"     "()")
 (key-chord-define-global ",,"     'indent-for-comment)
 (key-chord-define-global "a\;"    "@")
-(key-chord-define-global "s;"     "#{}\C-b")  ;; \C-b is "backspace">?<>
+(key-chord-define-global "s\;"    "$")
+(key-chord-define-global "df"    "\C-b")
+(key-chord-define-global "d\;"    "#{}\C-b")  ;; \C-b is "backspace">?<>
 (key-chord-define-global "<>"     "<>\C-b")
 
 
@@ -379,8 +401,8 @@
 ;; Don't auto-truncate lines in shell mode
 (add-hook 'shell-mode-hook '(lambda () (toggle-truncate-lines 1)))
 
-;; start with shell open
-(shell)
+;; start with shell closed - find I don't use it much
+;; (shell)
 
 
 ;; ------------------------------------------------------ ;;
@@ -419,6 +441,7 @@
   ;; If there is more than one, they won't work right.
  '(column-number-mode t)
  '(inhibit-startup-screen t)
+ '(show-paren-mode t)
  '(tab-stop-list (quote (2 4 6 8 10 12 14 16 18 20 22 24 26 28 30)))
  '(tool-bar-mode nil))
 
@@ -427,7 +450,7 @@
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :stipple nil :background "black" :foreground "yellow" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight bold :width normal))))
+ '(default ((t (:inherit nil :stipple nil :background "black" :foreground "yellow" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight bold :height 98 :width normal :foundry "unknown" :family "DejaVu Sans Mono"))))
  '(font-lock-warning-face ((((class color) (background dark)) (:foreground "SkyBlue" :background "black")))))
 
 ;;'(show-paren-mode t nil (paren))
