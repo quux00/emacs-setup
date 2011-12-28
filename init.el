@@ -219,6 +219,7 @@
 (key-chord-define-global "a\;"    "@")
 (key-chord-define-global "s\;"    "$")
 (key-chord-define-global "df"    "\C-b")
+(key-chord-define-global "fj"    "\C-f")  ;; ahead one space
 (key-chord-define-global "d\;"    "#{}\C-b")  ;; \C-b is "backspace">?<>
 (key-chord-define-global "<>"     "<>\C-b")
 
@@ -303,6 +304,11 @@
             (font-lock-add-keywords
              nil '(("\\<\\(FIXME:\\|TODO:\\|DEBUG:\\|lambda\\)" 1 font-lock-warning-face t)))))
 
+(add-hook 'emacs-lisp-mode-hook
+          (lambda ()
+            (font-lock-add-keywords
+             nil '(("\\<\\(FIXME:\\|TODO:\\|DEBUG:\\)" 1 font-lock-warning-face t)))))
+
 (add-hook 'scala-mode-hook
           (lambda ()
             (font-lock-add-keywords
@@ -319,6 +325,22 @@
 ;;              nil '(("\\<\\(lambda\\)" 1 font-lock-warning-face t)))))
 
 
+
+;; ---------------------------------------------------------- ;;
+;; ----------------- Enable paredit mode -------------------- ;;
+;; ---------------------------------------------------------- ;;
+(autoload 'enable-paredit-mode "paredit"
+  "Turn on pseudo-structural editing of Lisp code."
+  t)
+
+;; always enable paredit for clojure
+(add-hook 'clojure-mode-hook    'enable-paredit-mode)
+(add-hook 'lisp-mode-hook       'enable-paredit-mode)
+(add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
+
+;; TODO: once I get/learn SLIME and its repl, add this:
+;; ;; enable paredit in slime repl
+;; (add-hook 'slime-repl-mode-hook (lambda () (paredit-mode +1)))
 
 
 ;; ---------------------------------------------------------- ;;
