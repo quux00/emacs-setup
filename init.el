@@ -244,7 +244,9 @@
              (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
 
 ;; Clojure mode
-(autoload 'clojure-mode "clojure-mode" "A major mode for Clojure" t)
+(add-to-list 'load-path "~/.emacs.d/site-lisp/clojure-mode")
+(require 'clojure-mode)
+;;(autoload 'clojure-mode "clojure-mode" "A major mode for Clojure" t)
 (add-to-list 'auto-mode-alist '("\\.clj$" . clojure-mode))
 
 ;; Haml mode
@@ -338,9 +340,26 @@
 (add-hook 'lisp-mode-hook       'enable-paredit-mode)
 (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
 
-;; TODO: once I get/learn SLIME and its repl, add this:
-;; ;; enable paredit in slime repl
-;; (add-hook 'slime-repl-mode-hook (lambda () (paredit-mode +1)))
+;; paredit in slime
+(add-hook 'slime-repl-mode-hook (lambda () (paredit-mode +1)))
+	
+;; (eval-after-load "slime" 
+;;   '(progn (slime-setup '(slime-repl))	
+;; 	(defun paredit-mode-enable () (paredit-mode 1))	
+;; 	(add-hook 'slime-mode-hook 'paredit-mode-enable)	
+;; 	(add-hook 'slime-repl-mode-hook 'paredit-mode-enable)
+;; 	(setq slime-protocol-version 'ignore)))
+
+
+;; ---------------------------------------------------------- ;;
+;; ------------------------ SLIME --------------------------- ;;
+;; ---------------------------------------------------------- ;;
+;; (eval-after-load "slime" 
+;;   '(progn (slime-setup '(slime-repl))))
+
+;; (add-to-list 'load-path "~/.emacs.d/site-lisp/slime")
+;; (require 'slime)
+;; (slime-setup)
 
 
 ;; ---------------------------------------------------------- ;;
