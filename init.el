@@ -12,8 +12,12 @@
 (global-auto-revert-mode 1)    ; auto refresh buffers
 (setq global-auto-revert-non-file-buffers t)  ; Also auto refresh dired
 
-;; -> this may be a disaster ...
+;; remove if this becomes a problem
 (add-hook 'before-exit-hook 'delete-trailing-whitespace)
+
+;; default size of frame
+(add-to-list 'default-frame-alist '(height . 40))
+(add-to-list 'default-frame-alist '(width . 118))
 
 (setq scroll-step 1
       mouse-yank-at-point 't       ; mouse will paste at point, not where you click
@@ -224,6 +228,75 @@
 (key-chord-define-global "<>"     "<>\C-b")
 
 
+
+;; --------------------------------------------------------- ;;
+;; ------------------ Color Theme Support ------------------ ;;
+;; --------------------------------------------------------- ;;
+
+(add-to-list 'load-path "/usr/share/emacs/site-lisp/emacs-goodies-el/color-theme.el")
+(require 'color-theme)
+
+;; (add-to-list 'load-path "~/.emacs.d/site-lisp/color-themes")
+;; (load-file "~/.emacs.d/site-lisp/color-themes/zenburn-theme.el")
+;; (require 'color-theme-zenburn)
+;; (color-theme-zenburn)
+  
+;; uncomment this if you want color-theme to autoload
+;; (eval-after-load "color-theme"
+;;   '(progn
+;;      (color-theme-initialize)
+;;      (color-theme-calm-forest)))
+
+;; my own theme loading functions
+;; these will open a new frame and put the theme in just that frame
+(defun theme-char ()
+  (interactive)
+  (select-frame (make-frame))
+  (color-theme-initialize)
+  (set-variable 'color-theme-is-global nil)
+  (color-theme-charcoal-black))
+
+(defun theme-calm ()
+  (interactive)
+  (select-frame (make-frame))
+  (color-theme-initialize)
+  (set-variable 'color-theme-is-global nil)
+  (color-theme-calm-forest))
+
+(defun theme-law ()
+  (interactive)
+  (select-frame (make-frame))
+  (color-theme-initialize)
+  (set-variable 'color-theme-is-global nil)
+  (color-theme-lawrence))
+
+;; don't use - doesn't work => error reported to author 15-Jan-2012
+(defun theme-zen ()
+  (add-to-list 'load-path "~/.emacs.d/site-lisp/color-themes")
+  (interactive)
+  (color-theme-initialize)
+  (select-frame (make-frame))
+  (require 'color-theme-zenburn)  
+  (color-theme-initialize)
+  (set-variable 'color-theme-is-global nil)
+  ;; custom theme from: https://github.com/bbatsov/zenburn-emacs
+  (color-theme-charcoal-black)
+  (color-theme-zenburn))
+
+(defun theme-subdued ()
+  (add-to-list 'load-path "~/.emacs.d/site-lisp/color-themes")
+  (interactive)
+  (color-theme-initialize)
+  (select-frame (make-frame))
+  (require 'color-theme-subdued)  
+  (color-theme-initialize)
+  (set-variable 'color-theme-is-global nil)
+  ;; custom theme from: http://jblevins.org/projects/emacs-color-themes/
+  (color-theme-charcoal-black)
+  (color-theme-subdued))
+
+
+
 ;; --------------------------------------------------------- ;;
 ;; ---------- Programming/Markup Language Support ---------- ;;
 ;; --------------------------------------------------------- ;;
@@ -304,7 +377,7 @@
 (add-hook 'clojure-mode-hook
           (lambda ()
             (font-lock-add-keywords
-             nil '(("\\<\\(FIXME:\\|TODO:\\|DEBUG:\\|lambda\\)" 1 font-lock-warning-face t)))))
+             nil '(("\\<\\(FIXME:\\|TODO:\\|DEBUG:\\)" 1 font-lock-warning-face t)))))
 
 (add-hook 'emacs-lisp-mode-hook
           (lambda ()
