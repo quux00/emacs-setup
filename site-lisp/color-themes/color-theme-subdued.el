@@ -41,14 +41,18 @@ Based on the Tango color palette."
      (font-lock-string-face ((t (:foreground "#77507b")))) ; plum
      (font-lock-keyword-face ((t (:foreground "#729fcf")))) ; light sky blue
      ;; changed by Michael Peterson
-     (font-lock-builtin-face ((t (:foreground "yellow")))) ;
+     (font-lock-builtin-face ((t (:foreground "#8cd0d3")))) ; zenburn-blue (from zenburn theme)
+     ;; (font-lock-builtin-face ((t (:foreground "yellow")))) ;
      ;;(font-lock-builtin-face ((t (:foreground "#855c1b")))) ; med-dark chocolate
      (font-lock-function-name-face ((t (:foreground "#c4a000")))) ; dark butter
      ;; changed by Michael Peterson
      (font-lock-variable-name-face ((t (:bold f :foreground "cornsilk4"))))     
      ;; (font-lock-variable-name-face ((t (nil))))     
      (font-lock-preprocessor-face ((t (:foreground "#888a85")))) ; aluminum
-     (font-lock-constant-face ((t (:foreground "#4e9a06")))) ; dark chameleon
+
+     ;; changed by Michael Peterson
+     (font-lock-constant-face ((t (:foreground "#bfebbf")))) ; dark chameleon
+     ;; (font-lock-constant-face ((t (:foreground "#4e9a06")))) ; dark chameleon
      (font-lock-type-face ((t (:foreground "#ad7fa8")))) ; light plum
      (font-lock-warning-face ((t (:bold t :foreground "#cc0000")))) ; scarlet red
 

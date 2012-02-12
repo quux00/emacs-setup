@@ -160,9 +160,9 @@
               )))
 
 
-;; -------------------------------------------        ----------- ;;
+;; --------------------------------------------------------------- ;;
 ;; -------------- TODO: JUST ADDED - need to test !!! ------------- ;;
-;; -------------------------------------------        ----------- ;;
+;; ---------------------------------------------------------------- ;;
 ;; Original idea from
 ;; http://www.opensubscriber.com/message/emacs-devel@gnu.org/10971693.html
 ;; from: http://www.emacswiki.org/emacs/CommentingCode
@@ -283,11 +283,14 @@
   (color-theme-charcoal-black)
   (color-theme-zenburn))
 
-(defun theme-subdued ()
+;; not interactive - intended to be called by interactive methods
+;; thsub and thsubx
+(defun theme-subdued (new-frame)
   (add-to-list 'load-path "~/.emacs.d/site-lisp/color-themes")
-  (interactive)
+  ;; (interactive)
   (color-theme-initialize)
-  (select-frame (make-frame))
+  (if new-frame
+      (select-frame (make-frame)))
   (require 'color-theme-subdued)  
   (color-theme-initialize)
   (set-variable 'color-theme-is-global nil)
@@ -295,6 +298,15 @@
   (color-theme-charcoal-black)
   (color-theme-subdued))
 
+;; load the subdued color theme in the current frame
+(defun thsub ()
+  (interactive)
+  (theme-subdued nil))
+
+;; load the subdued color theme in (and only in) a new frame
+(defun thsubx ()
+  (interactive)
+  (theme-subdued t))
 
 
 ;; --------------------------------------------------------- ;;
