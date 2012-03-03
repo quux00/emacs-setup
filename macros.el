@@ -113,6 +113,11 @@
 (fset 'jss-for
    [tab ?f ?o ?r ?  ?\( ?v ?a ?r ?  ?i ?= ?0 ?\; ?  ?i ?  ?< ?  ?a ?r ?y ?. ?l ?e ?n ?g ?t ?h ?\; ?  ?i ?+ ?+ ?\) ?  ?\{ return return ?\} up up right right right right right right right right right right right right right right right right right right right right])
 
+;; create the shell/outline of a javascript lambda expression
+(fset 'jslambda
+   [?\( ?\) ?\( ?\) ?\; left left left left ?f ?u ?n ?c ?t ?i ?o ?n ?\( ?\) ?  ?\{ return return ?\} tab up tab])
+
+
 
 ;; --- C macros --- ;
 (fset 'cmain
@@ -144,4 +149,4 @@
 
 ;; --- macro aliases --- ;;
 (defalias 'jcom 'jdoc)
-
+(defalias 'jsl 'jslambda)

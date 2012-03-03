@@ -217,16 +217,20 @@
 ;; ----------------------------------------------------- ;;
 (require 'key-chord)
 (key-chord-mode 1)
-(key-chord-define-global "jk"     'dabbrev-expand)
-(key-chord-define-global "90"     "()")
-(key-chord-define-global ",,"     'indent-for-comment)
-(key-chord-define-global "a\;"    "@")
-(key-chord-define-global "s\;"    "$")
+(key-chord-define-global "jk"    'dabbrev-expand)
+(key-chord-define-global "90"    "()")
+(key-chord-define-global ",,"    'indent-for-comment)
+(key-chord-define-global "a\;"   "@")
+(key-chord-define-global "s\;"   "$")
+(key-chord-define-global "jq"    "$('')\C-b\C-b")     ;; for jquery
 (key-chord-define-global "df"    "\C-b")
-(key-chord-define-global "fj"    "\C-f")  ;; ahead one space
-(key-chord-define-global "d\;"    "#{}\C-b")  ;; \C-b is "backspace">?<>
-(key-chord-define-global "<>"     "<>\C-b")
+(key-chord-define-global "fj"    "\C-f")      ;; ahead one space
+(key-chord-define-global "d\;"   "#{}\C-b")  ;; \C-b is "backspace">?<>
+(key-chord-define-global "<>"    "<>\C-b")
+(key-chord-define-global "jl"    'jslambda)     ;; for javascript
 
+
+;; TODO: can I link a chord to a macro, such as jslambda?
 
 
 ;; --------------------------------------------------------- ;;
@@ -369,6 +373,17 @@
 (add-to-list 'auto-mode-alist '("\\.rjs$" . ruby-mode))
 (add-hook 'ruby-mode-hook (lambda () (local-set-key "\r" 'newline-and-indent)))
 
+;; --------------------------------------------------- ;;
+;; --------------- Dirtree and Friends --------------- ;;
+;; --------------------------------------------------- ;;
+
+(require 'tree-mode)
+(require 'windata)
+(require 'dirtree)
+;(autoload 'dirtree "dirtree" "Add directory to tree view" t)
+(global-set-key "\C-o" 'dirtree-show)
+
+
 
 ;; ----------------- ruby-debug support ------------------- ;;
 ;;(require 'rdebug)   ; ~TODO: need to figure this out - not working
@@ -457,12 +472,16 @@
 (define-key global-map "\C-cl" 'org-store-link)
 (define-key global-map "\C-ck" 'org-agenda)  ; note this is C-ca in the org-mode doc
 (setq org-todo-keywords
-      '((sequence "TODO" "IN-PROGRESS" "|" "DONE" "DEFERRED" "NOTE")))
+      '((sequence "TODO" "IN-PROGRESS" "QUESTION(q)" "DONE(d)" "DEFERRED" "DATEDONE")))
+(setq org-todo-keyword-faces
+           '(("DONE"     . (:foreground "#94ff94"))
+             ("QUESTION" . (:foreground "#ff65ff"))
+             ("DEFERRED" . (:foreground "#ffc358"))
+             ))
 (setq org-log-done t)
 (org-remember-insinuate)  ; use remember.el in org-mode
 (setq org-default-notes-file (concat org-directory "/remember.org"))
 (define-key global-map "\C-cr" 'org-remember)  ; note this is C-cc in the org-mode doc
-
 
 ;; ---------------------------------------------------------- ;;
 ;; --------------- Printing and PDF support ----------------- ;;
