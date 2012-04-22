@@ -198,6 +198,8 @@
 (global-set-key (read-kbd-macro "M-s") 'query-replace)
 (global-set-key (read-kbd-macro "C-x w") 'write-words)
 (global-set-key (read-kbd-macro "C-x c") 'write-code)
+(global-set-key "\C-x\C-v" 'scroll-up)            ; to align with my Eclipse settings
+(global-set-key "\C-c o" 'occur)                   ; occur takes regex to show all occurances in file
 
 ;; Use control-arrow keys for window resizing
 ;; <<MP note: turned off since these don't seem to work>>
@@ -217,21 +219,24 @@
 ;; ----------------------------------------------------- ;;
 (require 'key-chord)
 (key-chord-mode 1)
+
+;; General purpose chords
 (key-chord-define-global "jk"    'dabbrev-expand)
 (key-chord-define-global "90"    "()")
 (key-chord-define-global ",,"    'indent-for-comment)
 (key-chord-define-global "a\;"   "@")
 (key-chord-define-global "s\;"   "$")
-(key-chord-define-global "jq"    "$('')\C-b\C-b")     ;; for jquery
 (key-chord-define-global "df"    "\C-b")
 (key-chord-define-global "fj"    "\C-f")      ;; ahead one space
-(key-chord-define-global "d\;"   "#{}\C-b")  ;; \C-b is "backspace">?<>
 (key-chord-define-global "<>"    "<>\C-b")
-(key-chord-define-global "jl"    'jslambda)     ;; for javascript
 
+;; chords for Clojure coding
+(key-chord-define-global "d\;"   "#{}\C-b")  ;; \C-b is "backspace">?<>
 
-;; TODO: can I link a chord to a macro, such as jslambda?
-
+;; chords for JavaScript coding
+(key-chord-define-global "jl"    'jslambda)  ;; jslambda is a macro I defined
+(key-chord-define-global "fn"    'jsfunc)         
+(key-chord-define-global "jq"    "$('')\C-b\C-b") ;; for jquery
 
 ;; --------------------------------------------------------- ;;
 ;; ------------------ Color Theme Support ------------------ ;;
@@ -319,7 +324,7 @@
 
 ;; Steve Yegge's JavaScript major mode: http://code.google.com/p/js2-mode
 (autoload 'js2-mode "js2" nil t)
-(add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
+;; (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
 
 ;; Scala mode
 (add-to-list 'load-path "~/.emacs.d/site-lisp/scala-mode")
@@ -373,6 +378,21 @@
 (add-to-list 'auto-mode-alist '("\\.rjs$" . ruby-mode))
 (add-hook 'ruby-mode-hook (lambda () (local-set-key "\r" 'newline-and-indent)))
 
+;; yasnippet 
+(add-to-list 'load-path "~/.emacs.d/site-lisp/yasnippet")
+(require 'yasnippet)
+(yas/global-mode 1)
+
+;; cucumber mode and support
+(add-to-list 'load-path "~/.emacs.d/site-lisp/cucumber.el")
+(require 'feature-mode)
+(require 'cucumber-mode)
+(add-to-list 'auto-mode-alist '("\.feature$" . feature-mode))
+
+;; load bundle snippets for cucumber
+(yas/load-directory "~/.emacs.d/site-lisp/cucumber.el/snippets/feature-mode")
+
+
 ;; --------------------------------------------------- ;;
 ;; --------------- Dirtree and Friends --------------- ;;
 ;; --------------------------------------------------- ;;
@@ -399,27 +419,27 @@
 (add-hook 'ruby-mode-hook
           (lambda ()
             (font-lock-add-keywords
-             nil '(("\\<\\(FIXME:\\|TODO:\\|DEBUG:\\|lambda\\)" 1 font-lock-warning-face t)))))
+             nil '(("\\<\\(FIXME\\|TODO\\|DEBUG\\|lambda\\)" 1 font-lock-warning-face t)))))
 
 (add-hook 'clojure-mode-hook
           (lambda ()
             (font-lock-add-keywords
-             nil '(("\\<\\(FIXME:\\|TODO:\\|DEBUG:\\)" 1 font-lock-warning-face t)))))
+             nil '(("\\<\\(FIXME\\|TODO\\|DEBUG\\)" 1 font-lock-warning-face t)))))
 
 (add-hook 'emacs-lisp-mode-hook
           (lambda ()
             (font-lock-add-keywords
-             nil '(("\\<\\(FIXME:\\|TODO:\\|DEBUG:\\)" 1 font-lock-warning-face t)))))
+             nil '(("\\<\\(FIXME\\|TODO\\|DEBUG\\)" 1 font-lock-warning-face t)))))
 
 (add-hook 'scala-mode-hook
           (lambda ()
             (font-lock-add-keywords
-             nil '(("\\<\\(FIXME:\\|TODO:\\|DEBUG:\\|lambda\\)" 1 font-lock-warning-face t)))))
+             nil '(("\\<\\(FIXME\\|TODO\\|DEBUG\\|lambda\\)" 1 font-lock-warning-face t)))))
 
-(add-hook 'javascript-mode-hook
+(add-hook 'js-mode-hook
           (lambda ()
             (font-lock-add-keywords
-             nil '(("\\<\\(FIXME:\\|TODO:\\|DEBUG:\\|lambda\\)" 1 font-lock-warning-face t)))))
+             nil '(("\\<\\(\\$\\.\\|FIXME\\|TODO\\|DEBUG\\|lambda\\)" 1 font-lock-warning-face t)))))
 
 ;; (add-hook 'ruby-mode-hook
 ;;           (lambda ()
@@ -465,23 +485,23 @@
 ;; ---------------------------------------------------------- ;;
 ;; ------------------ org-mode settings --------------------- ;;
 ;; ---------------------------------------------------------- ;;
-(require 'org-install)
-(add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
-(setq org-startup-folded nil )
-(setq word-wrap t)
-(define-key global-map "\C-cl" 'org-store-link)
-(define-key global-map "\C-ck" 'org-agenda)  ; note this is C-ca in the org-mode doc
-(setq org-todo-keywords
-      '((sequence "TODO" "IN-PROGRESS" "QUESTION(q)" "DONE(d)" "DEFERRED" "DATEDONE")))
-(setq org-todo-keyword-faces
-           '(("DONE"     . (:foreground "#94ff94"))
-             ("QUESTION" . (:foreground "#ff65ff"))
-             ("DEFERRED" . (:foreground "#ffc358"))
-             ))
-(setq org-log-done t)
-(org-remember-insinuate)  ; use remember.el in org-mode
-(setq org-default-notes-file (concat org-directory "/remember.org"))
-(define-key global-map "\C-cr" 'org-remember)  ; note this is C-cc in the org-mode doc
+;; (require 'org-install)
+;; (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
+;; (setq org-startup-folded nil )
+;; (setq word-wrap t)
+;; (define-key global-map "\C-cl" 'org-store-link)
+;; (define-key global-map "\C-ck" 'org-agenda)  ; note this is C-ca in the org-mode doc
+;; (setq org-todo-keywords
+;;       '((sequence "TODO" "IN-PROGRESS" "QUESTION(q)" "DONE(d)" "DEFERRED" "DATEDONE")))
+;; (setq org-todo-keyword-faces
+;;            '(("DONE"     . (:foreground "#94ff94"))
+;;              ("QUESTION" . (:foreground "#ff65ff"))
+;;              ("DEFERRED" . (:foreground "#ffc358"))
+;;              ))
+;; (setq org-log-done t)
+;; (org-remember-insinuate)  ; use remember.el in org-mode
+;; (setq org-default-notes-file (concat org-directory "/remember.org"))
+;; (define-key global-map "\C-cr" 'org-remember)  ; note this is C-cc in the org-mode doc
 
 ;; ---------------------------------------------------------- ;;
 ;; --------------- Printing and PDF support ----------------- ;;
