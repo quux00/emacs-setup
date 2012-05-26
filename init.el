@@ -227,6 +227,7 @@
 (key-chord-define-global "a\;"   "@")
 (key-chord-define-global "s\;"   "$")
 (key-chord-define-global "df"    "\C-b")
+(key-chord-define-global "cl"    "console.log();\C-b\C-b")
 (key-chord-define-global "fj"    "\C-f")      ;; ahead one space
 (key-chord-define-global "<>"    "<>\C-b")
 
@@ -338,6 +339,7 @@
              (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
 
 ;; Clojure mode
+;; git clone git://github.com/technomancy/clojure-mode.git
 (add-to-list 'load-path "~/.emacs.d/site-lisp/clojure-mode")
 (require 'clojure-mode)
 ;;(autoload 'clojure-mode "clojure-mode" "A major mode for Clojure" t)
@@ -358,7 +360,7 @@
 (add-to-list 'auto-mode-alist '("\\.inc$" . php-mode))
 
 ;; CoffeeScript support
-;; from: https://github.com/defunkt/coffee-mode
+;; git clone git://github.com/defunkt/coffee-mode.git
 (add-to-list 'load-path "~/.emacs.d/site-lisp/coffee-mode")
 (require 'coffee-mode)
 (add-to-list 'auto-mode-alist '("\\.coffee$" . coffee-mode))
@@ -379,12 +381,14 @@
 (add-to-list 'auto-mode-alist '("\\.rjs$" . ruby-mode))
 (add-hook 'ruby-mode-hook (lambda () (local-set-key "\r" 'newline-and-indent)))
 
-;; yasnippet 
+;; yasnippet
+;; git clone git://github.com/capitaomorte/yasnippet.git
 (add-to-list 'load-path "~/.emacs.d/site-lisp/yasnippet")
 (require 'yasnippet)
 (yas/global-mode 1)
 
 ;; cucumber mode and support
+;; git clone git://github.com/michaelklishin/cucumber.el.git
 (add-to-list 'load-path "~/.emacs.d/site-lisp/cucumber.el")
 (require 'feature-mode)
 (require 'cucumber-mode)
@@ -392,6 +396,9 @@
 
 ;; load bundle snippets for cucumber
 (yas/load-directory "~/.emacs.d/site-lisp/cucumber.el/snippets/feature-mode")
+
+;; mumamo (multiple major modes) support -> mostly good for html and php, so disabled by default
+;; (load "~/.emacs.d/site-lisp/nxhtml/autostart.el")
 
 
 ;; --------------------------------------------------- ;;
@@ -415,32 +422,32 @@
 (add-hook 'c-mode-common-hook
           (lambda ()
             (font-lock-add-keywords
-             nil '(("\\<\\(FIXME\\|TODO\\|DEBUG\\):" 1 font-lock-warning-face t)))))
+             nil '(("\\<\\(FIXME:\\|TODO:\\|DEBUG:\\):" 1 font-lock-warning-face t)))))
 
 (add-hook 'ruby-mode-hook
           (lambda ()
             (font-lock-add-keywords
-             nil '(("\\<\\(FIXME\\|TODO\\|DEBUG\\|lambda\\)" 1 font-lock-warning-face t)))))
+             nil '(("\\<\\(FIXME:\\|TODO:\\|DEBUG:\\|lambda\\)" 1 font-lock-warning-face t)))))
 
 (add-hook 'clojure-mode-hook
           (lambda ()
             (font-lock-add-keywords
-             nil '(("\\<\\(FIXME\\|TODO\\|DEBUG\\)" 1 font-lock-warning-face t)))))
+             nil '(("\\<\\(FIXME:\\|TODO:\\|DEBUG:\\)" 1 font-lock-warning-face t)))))
 
 (add-hook 'emacs-lisp-mode-hook
           (lambda ()
             (font-lock-add-keywords
-             nil '(("\\<\\(FIXME\\|TODO\\|DEBUG\\)" 1 font-lock-warning-face t)))))
+             nil '(("\\<\\(FIXME:\\|TODO:\\|DEBUG:\\)" 1 font-lock-warning-face t)))))
 
 (add-hook 'scala-mode-hook
           (lambda ()
             (font-lock-add-keywords
-             nil '(("\\<\\(FIXME\\|TODO\\|DEBUG\\|lambda\\)" 1 font-lock-warning-face t)))))
+             nil '(("\\<\\(FIXME:\\|TODO:\\|DEBUG:\\|lambda\\)" 1 font-lock-warning-face t)))))
 
 (add-hook 'js-mode-hook
           (lambda ()
             (font-lock-add-keywords
-             nil '(("\\<\\(\\$\\.\\|FIXME\\|TODO\\|DEBUG\\|lambda\\)" 1 font-lock-warning-face t)))))
+             nil '(("\\<\\(\\$\\.\\|FIXME:\\|TODO:\\|DEBUG:\\|lambda\\)" 1 font-lock-warning-face t)))))
 
 ;; (add-hook 'ruby-mode-hook
 ;;           (lambda ()
@@ -486,23 +493,23 @@
 ;; ---------------------------------------------------------- ;;
 ;; ------------------ org-mode settings --------------------- ;;
 ;; ---------------------------------------------------------- ;;
-;; (require 'org-install)
-;; (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
-;; (setq org-startup-folded nil )
-;; (setq word-wrap t)
-;; (define-key global-map "\C-cl" 'org-store-link)
-;; (define-key global-map "\C-ck" 'org-agenda)  ; note this is C-ca in the org-mode doc
-;; (setq org-todo-keywords
-;;       '((sequence "TODO" "IN-PROGRESS" "QUESTION(q)" "DONE(d)" "DEFERRED" "DATEDONE")))
-;; (setq org-todo-keyword-faces
-;;            '(("DONE"     . (:foreground "#94ff94"))
-;;              ("QUESTION" . (:foreground "#ff65ff"))
-;;              ("DEFERRED" . (:foreground "#ffc358"))
-;;              ))
-;; (setq org-log-done t)
-;; (org-remember-insinuate)  ; use remember.el in org-mode
-;; (setq org-default-notes-file (concat org-directory "/remember.org"))
-;; (define-key global-map "\C-cr" 'org-remember)  ; note this is C-cc in the org-mode doc
+(require 'org-install)
+(add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
+(setq org-startup-folded nil )
+(setq word-wrap t)
+(define-key global-map "\C-cl" 'org-store-link)
+(define-key global-map "\C-ck" 'org-agenda)  ; note this is C-ca in the org-mode doc
+(setq org-todo-keywords
+      '((sequence "TODO" "IN-PROGRESS" "QUESTION(q)" "DONE(d)" "DEFERRED" "DATEDONE")))
+(setq org-todo-keyword-faces
+           '(("DONE"     . (:foreground "#94ff94"))
+             ("QUESTION" . (:foreground "#ff65ff"))
+             ("DEFERRED" . (:foreground "#ffc358"))
+             ))
+(setq org-log-done t)
+(org-remember-insinuate)  ; use remember.el in org-mode
+(setq org-default-notes-file (concat org-directory "/remember.org"))
+(define-key global-map "\C-cr" 'org-remember)  ; note this is C-cc in the org-mode doc
 
 ;; ---------------------------------------------------------- ;;
 ;; --------------- Printing and PDF support ----------------- ;;
