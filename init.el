@@ -345,6 +345,10 @@
 ;;(autoload 'clojure-mode "clojure-mode" "A major mode for Clojure" t)
 (add-to-list 'auto-mode-alist '("\\.clj$" . clojure-mode))
 
+;; Windows batch file mode, for those sad moments when it's required ...
+(require 'bat-mode)
+(add-to-list 'auto-mode-alist '("\\.bat$" . bat-mode))
+
 ;; Haml mode
 (require 'haml-mode)
 (add-hook 'haml-mode-hook
